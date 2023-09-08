@@ -1,5 +1,5 @@
 ﻿using ServiceKeeper.Core.PendingHandlerMediatREvents;
-using System.Text.Json;
+using Newtonsoft.Json;
 using ServiceKeeper.Consumer.Sample.Domain.Entity;
 
 namespace ServiceKeeper.Consumer.Sample.Domain.DomainEventHandlers
@@ -22,7 +22,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain.DomainEventHandlers
             try
             {
                 Console.WriteLine(request.TaskJson);
-                DingTask dingTask = JsonSerializer.Deserialize<DingTask>(request.TaskJson) ?? throw new Exception("无法解析DingTask");
+                DingTask? dingTask = JsonConvert.DeserializeObject<DingTask>(request.TaskJson);
                 if (dingTask != null)
                 {
                     await dingTaskDomainService.Send(dingTask);

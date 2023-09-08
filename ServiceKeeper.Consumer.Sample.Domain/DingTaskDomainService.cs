@@ -37,7 +37,6 @@ namespace ServiceKeeper.Consumer.Sample.Domain
             }
             catch (Exception)
             {
-
                 throw;
             }
            

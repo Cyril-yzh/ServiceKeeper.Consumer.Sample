@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 using System.Text;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace CloudPlatformMessageProvider.CloudPlatform
 {
@@ -45,7 +45,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
         public async Task<string> GetAccessTokenAsync(string corpid, string corpsecret)
         {
             string url = options.DingGetAccessTokenUrl;
-            string json = JsonSerializer.Serialize(new
+            string json = JsonConvert.SerializeObject(new
             {
                 appKey = corpid,
                 appSecret = corpsecret,
@@ -55,7 +55,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                return JsonSerializer.Deserialize<dynamic?>(responseContent)?["accessToken"].ToString() ?? throw new Exception($"使用corpid为{corpid}的GetAccessToken失败");
+                return JsonConvert.DeserializeObject<dynamic?>(responseContent)?["accessToken"].ToString() ?? throw new Exception($"使用corpid为{corpid}的GetAccessToken失败");
             }
             else
             {
@@ -80,12 +80,12 @@ namespace CloudPlatformMessageProvider.CloudPlatform
             string result = "";
             string url = options.DingGetUserIdbyMobilesUrl + token;
 
-            var json = JsonSerializer.Serialize(new { mobile });
+            var json = JsonConvert.SerializeObject(new { mobile });
             using HttpResponseMessage response = await ExecuteAsync(url, json);
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                dynamic? dyn = JsonSerializer.Deserialize<dynamic>(responseContent);
+                dynamic? dyn = JsonConvert.DeserializeObject<dynamic>(responseContent);
                 if ((int)dyn?["errcode"] == 0)
                 {
                     result = dyn["result"]["userid"].ToString();
@@ -104,12 +104,12 @@ namespace CloudPlatformMessageProvider.CloudPlatform
 
             foreach (string mobile in mobiles)
             {
-                var json = JsonSerializer.Serialize(new { mobile });
+                var json = JsonConvert.SerializeObject(new { mobile });
                 using HttpResponseMessage response = await ExecuteAsync(url, json);
                 if (response.IsSuccessStatusCode)
                 {
                     var responseContent = await response.Content.ReadAsStringAsync();
-                    dynamic? dyn = JsonSerializer.Deserialize<dynamic>(responseContent);
+                    dynamic? dyn = JsonConvert.DeserializeObject<dynamic>(responseContent);
                     if ((int)dyn?["errcode"] == 0)
                     {
                         result.Add(dyn["result"]["userid"].ToString());
@@ -134,7 +134,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
         public async Task<List<KeyValuePair<string, int>>> GetSubDepartmentsAsync(string token, long dept_id = 1)
         {
             var url = $"{options.DingGetSubDepartmentsUrl}{token}";
-            var json = JsonSerializer.Serialize(new
+            var json = JsonConvert.SerializeObject(new
             {
                 language = "zh_CN",
                 dept_id
@@ -147,7 +147,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            dynamic? res = JsonSerializer.Deserialize<dynamic>(responseContent);
+            dynamic? res = JsonConvert.DeserializeObject<dynamic>(responseContent);
 
             if ((int)res?["errcode"] != 0)
             {
@@ -223,7 +223,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                dynamic? allRoleGroup = JsonSerializer.Deserialize<dynamic>(responseContent);
+                dynamic? allRoleGroup = JsonConvert.DeserializeObject<dynamic>(responseContent);
                 if ((int)allRoleGroup?["errcode"] == 0)
                 {
                     var result = new List<KeyValuePair<string, long>>();
@@ -260,13 +260,13 @@ namespace CloudPlatformMessageProvider.CloudPlatform
 
             var url = $"{options.DingGetUserIdbyRoleIdUrl}{token}";
 
-            var json = JsonSerializer.Serialize(new { role_id = roleid });
+            var json = JsonConvert.SerializeObject(new { role_id = roleid });
             using var response = await ExecuteAsync(url, json);
 
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                dynamic? roleResult = JsonSerializer.Deserialize<dynamic>(responseContent);
+                dynamic? roleResult = JsonConvert.DeserializeObject<dynamic>(responseContent);
                 if ((int)roleResult?["errcode"] == 0)
                 {
                     var result = new List<string>();
@@ -299,7 +299,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<dynamic>(responseContent);
+                var result = JsonConvert.DeserializeObject<dynamic>(responseContent);
                 if ((int)result?["errcode"] == 0)
                 {
                     return true;
@@ -314,7 +314,7 @@ namespace CloudPlatformMessageProvider.CloudPlatform
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<dynamic>(responseContent);
+                var result = JsonConvert.DeserializeObject<dynamic>(responseContent);
                 if ((int)result?["errcode"] == 0)
                 {
                     return true;

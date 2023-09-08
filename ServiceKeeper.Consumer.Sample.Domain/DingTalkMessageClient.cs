@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Reflection;
 using Microsoft.Extensions.Caching.Memory;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace ServiceKeeper.Consumer.Sample.Domain
 {
@@ -41,7 +41,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                         switch (sendMessage.MessageTemplateMode)
                         {
                             case MessageTemplateMode.Text:
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -52,7 +52,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 });
                                 break;
                             case MessageTemplateMode.Markdown:
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -63,7 +63,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 });
                                 break;
                             case MessageTemplateMode.Link:
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -74,7 +74,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 });
                                 break;
                             case MessageTemplateMode.ActionCard:
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -85,7 +85,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 });
                                 break;
                             case MessageTemplateMode.FeedCard:
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -109,7 +109,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     textTemplate.content = $"{textTemplate.content} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
                                 }
 #endif
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -130,7 +130,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     markdownTemplate.text = $"{markdownTemplate.text} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
                                 }
 #endif
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -150,7 +150,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     linkTemplate.text = $"{linkTemplate.text} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
                                 }
 #endif
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -170,7 +170,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     actionCardTemplate.markdown = $"{actionCardTemplate.markdown} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
                                 }
 #endif
-                                result = JsonSerializer.Serialize(new
+                                result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
@@ -213,12 +213,12 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                     Dictionary<MessageSendMode, ParseReceiver> temp_receiver = new(); //单独创建一个Dictionary避免线程安全问题
                     if (UnparsedReceiver.HasWorkNoticeReceiver(receiver))
                     {
-                        //string? token = await memoryCache.GetOrCreateAsync($"dingding - {receiver.Corpid} - {receiver.Corpsecret}", async (e) =>
-                        //{
-                        //    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(100);
-                        //    return await accessTokenClient.GetAccessTokenAsync(receiver.Corpid, receiver.Corpsecret);
-                        //});
-                        string? token = await accessTokenClient.GetAccessTokenAsync(receiver.Corpid, receiver.Corpsecret);
+                        string? token = await memoryCache.GetOrCreateAsync($"dingding - {receiver.Corpid} - {receiver.Corpsecret}", async (e) =>
+                        {
+                            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(100);
+                            return await accessTokenClient.GetAccessTokenAsync(receiver.Corpid, receiver.Corpsecret);
+                        });
+                        //string? token = await accessTokenClient.GetAccessTokenAsync(receiver.Corpid, receiver.Corpsecret);
                         if (token != null)
                         {
                             string users = await DingUserFilter(token, receiver);
@@ -243,9 +243,9 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                 }));
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
                 throw;
             }
         }
@@ -284,12 +284,12 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                 {
                     foreach (var roleId in receiver.ToRoleid)
                     {
-                        //List<string>? temp_userid = await memoryCache.GetOrCreateAsync($"dingding - {roleId}", async (e) =>
-                        //{
-                        //    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
-                        //    return await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
-                        //});
-                        List<string>? temp_userid = await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
+                        List<string>? temp_userid = await memoryCache.GetOrCreateAsync($"dingding - {roleId}", async (e) =>
+                        {
+                            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                            return await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
+                        });
+                        //List<string>? temp_userid = await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
                         if (temp_userid?.Any() ?? false) users.AddRange(temp_userid);
                     }
                 }
@@ -301,12 +301,12 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                         long roleId = roleList.Find(c => c.Key == roleName).Value;
                         if (roleId != 0)
                         {
-                            //List<string>? temp_userid = await memoryCache.GetOrCreateAsync($"dingding - {roleId}", async (e) =>
-                            //{
-                            //    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
-                            //    return await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
-                            //});
-                            List<string>? temp_userid = await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
+                            List<string>? temp_userid = await memoryCache.GetOrCreateAsync($"dingding - {roleId}", async (e) =>
+                            {
+                                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                                return await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
+                            });
+                            //List<string>? temp_userid = await roleClient.GetUserIdbyRoleIdAsync(token, roleId);
                             if (temp_userid?.Any() ?? false) users.AddRange(temp_userid);
                         }
                     }
@@ -315,12 +315,12 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                 {
                     foreach (string mobile in receiver.ToUserMobiles)
                     {
-                        //string? temp_userid = await memoryCache.GetOrCreateAsync($"dingding - {mobile}", async (e) =>
-                        //{
-                        //    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
-                        //    return await userClient.GetUseridbyMobileAsync(token, mobile);
-                        //});
-                        string? temp_userid = await userClient.GetUseridbyMobileAsync(token, mobile);
+                        string? temp_userid = await memoryCache.GetOrCreateAsync($"dingding - {mobile}", async (e) =>
+                        {
+                            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                            return await userClient.GetUseridbyMobileAsync(token, mobile);
+                        });
+                        //string? temp_userid = await userClient.GetUseridbyMobileAsync(token, mobile);
                         if (!string.IsNullOrEmpty(temp_userid)) users.Add(temp_userid);
                     }
                 }
@@ -354,12 +354,12 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                 {
                     foreach (var departmentName in receiver.ToDepartmentNames)
                     {
-                        //long temp_departmentid = await memoryCache.GetOrCreateAsync($"dingding - {departmentName}", async (e) =>
-                        //{
-                        //    e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
-                        //    return await departmentClient.GetDepartmentIdAysnc(token, departmentName);
-                        //});
-                        long temp_departmentid = await departmentClient.GetDepartmentIdAysnc(token, departmentName);
+                        long temp_departmentid = await memoryCache.GetOrCreateAsync($"dingding - {departmentName}", async (e) =>
+                        {
+                            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7);
+                            return await departmentClient.GetDepartmentIdAysnc(token, departmentName);
+                        });
+                        //long temp_departmentid = await departmentClient.GetDepartmentIdAysnc(token, departmentName);
                         if (temp_departmentid != 0) departments.Add(temp_departmentid);
                     }
                 }
