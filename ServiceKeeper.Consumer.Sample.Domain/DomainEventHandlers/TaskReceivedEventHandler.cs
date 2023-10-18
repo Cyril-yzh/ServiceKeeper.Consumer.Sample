@@ -1,5 +1,6 @@
-﻿using ServiceKeeper.Core.PendingHandlerMediatREvents;
+﻿using ServiceKeeper.Core.MediatR;
 using Newtonsoft.Json;
+using ServiceKeeper.Core;
 using ServiceKeeper.Consumer.Sample.Domain.Entity;
 
 namespace ServiceKeeper.Consumer.Sample.Domain.DomainEventHandlers
@@ -17,23 +18,22 @@ namespace ServiceKeeper.Consumer.Sample.Domain.DomainEventHandlers
             this.dingTaskDomainService = dingTaskDomainService;
         }
 
-        public async Task<bool> Handle(TaskReceivedEvent request, CancellationToken cancellationToken)
+        public async Task<EventResult> Handle(TaskReceivedEvent request, CancellationToken cancellationToken)
         {
             try
             {
-                Console.WriteLine(request.TaskJson);
+                //Console.WriteLine(request.TaskJson);
                 DingTask? dingTask = JsonConvert.DeserializeObject<DingTask>(request.TaskJson);
                 if (dingTask != null)
                 {
                     await dingTaskDomainService.Send(dingTask);
-                    return true;
+                    return new EventResult(Code.Success,"钉钉消息发送完成");
                 }
-                return false;
+                return new EventResult(Code.ParseError, "钉钉消息发送失败");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"处理任务时发生错误:{ex.Message}");
-                return false;
+                return new EventResult(Code.Failure, $"钉钉消息发送时发生错误:{ex.Message}");
             }
         }
     }

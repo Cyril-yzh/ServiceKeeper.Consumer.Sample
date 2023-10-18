@@ -3,7 +3,7 @@ using ServiceKeeper.Consumer.Sample.Domain.DomainEventHandlers;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceKeeper.Core.PendingHandlerMediatREvents;
+using ServiceKeeper.Core.MediatR;
 
 namespace ServiceKeeper.Consumer.Sample.Domain.DependencyInjection
 {
@@ -25,9 +25,8 @@ namespace ServiceKeeper.Consumer.Sample.Domain.DependencyInjection
             services.AddSingleton<ITaskReceivedEventHandler, TaskReceivedEventHandler>();
             services.AddSingleton<DingTaskDomainService>(sp =>
             {
-                var mediator = sp.GetRequiredService<IMediator>();
                 var messageClient = sp.GetRequiredService<DingTalkMessageClient>();
-                return new DingTaskDomainService(mediator, messageClient);
+                return new DingTaskDomainService( messageClient);
             });
             return services;
 

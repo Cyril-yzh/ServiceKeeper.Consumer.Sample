@@ -1,5 +1,5 @@
-﻿using ReflectionSerializer;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using ServiceKeeper.Core.ReflectionSerializer;
 
 namespace ServiceKeeper.Consumer.Sample.Domain.Entity
 {
@@ -11,49 +11,31 @@ namespace ServiceKeeper.Consumer.Sample.Domain.Entity
     public record DingMessage
     {
         [Label("消息发送样式")]
-        [EnumFormMapping("Template")]
         public MessageTemplateMode MessageTemplateMode { get; init; }
-        /// <summary>
-        /// 消息文本
-        /// </summary>
-        public DingBaseTemplate Template { get; init; }
-
-        public DingMessage(MessageTemplateMode messageTemplateMode, string template)
-        {
-            MessageTemplateMode = messageTemplateMode;
-            Template = CreateTemplate(messageTemplateMode, template);
-        }
-
-        private static DingBaseTemplate CreateTemplate(MessageTemplateMode messageTemplateMode, string json)
-        {
-            DingBaseTemplate? result = messageTemplateMode switch
-            {
-                MessageTemplateMode.Text => JsonConvert.DeserializeObject<TextTemplate>(json),
-                MessageTemplateMode.Markdown => JsonConvert.DeserializeObject<MarkdownTemplate>(json),
-                MessageTemplateMode.Link => JsonConvert.DeserializeObject<LinkTemplate>(json),
-                MessageTemplateMode.ActionCard => JsonConvert.DeserializeObject<ActionCardTemplate>(json),
-                MessageTemplateMode.FeedCard => JsonConvert.DeserializeObject<FeedCardTemplate>(json),
-                _ => throw new Exception("无效的模板模式"),
-            };
-            if (result == null) throw new Exception("无法将json反序列化为钉钉消息");
-            return result;
-        }
+        [IsMappingType]
+        public TextTemplate? TextTemplate { get; init; }
+        [IsMappingType]
+        public MarkdownTemplate? MarkdownTemplate { get; init; }
+        [IsMappingType]
+        public LinkTemplate? LinkTemplate { get; init; }
+        [IsMappingType]
+        public ActionCardTemplate? ActionCardTemplate { get; init; }
+        [IsMappingType]
+        public FeedCardTemplate? FeedCardTemplate { get; init; }
     }
 
-    public abstract class DingBaseTemplate { };
-
-    public class TextTemplate : DingBaseTemplate
+    public class TextTemplate
     {
         public string content = null!;
     }
 
-    public class MarkdownTemplate : DingBaseTemplate
+    public class MarkdownTemplate
     {
         public string title = null!;
         public string text = null!;
     }
 
-    public class LinkTemplate : DingBaseTemplate
+    public class LinkTemplate
     {
         public string messageUrl = null!;
         public string picUrl = null!;
@@ -62,7 +44,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain.Entity
     }
 
 
-    public class ActionCardTemplate : DingBaseTemplate
+    public class ActionCardTemplate
     {
         public string title = null!;
         public string markdown = null!;
@@ -76,7 +58,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain.Entity
         public string action_url = null!;
     }
 
-    public class FeedCardTemplate : DingBaseTemplate
+    public class FeedCardTemplate
     {
         public WebHookLink[] links = null!;
     }

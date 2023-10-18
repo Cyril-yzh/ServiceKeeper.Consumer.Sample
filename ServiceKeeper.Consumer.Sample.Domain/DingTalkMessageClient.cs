@@ -46,7 +46,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     msg = new
                                     {
                                         msgtype = "text",
-                                        text = sendMessage.Template,
+                                        text = sendMessage.TextTemplate,
                                     },
                                     to_all_user = "false",
                                 });
@@ -57,7 +57,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     msg = new
                                     {
                                         msgtype = "markdown",
-                                        markdown = sendMessage.Template,
+                                        markdown = sendMessage.MarkdownTemplate,
                                     },
                                     to_all_user = "false",
                                 });
@@ -68,7 +68,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     msg = new
                                     {
                                         msgtype = "link",
-                                        link = sendMessage.Template,
+                                        link = sendMessage.LinkTemplate,
                                     },
                                     to_all_user = "false",
                                 });
@@ -79,7 +79,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     msg = new
                                     {
                                         msgtype = "actionCard",
-                                        actionCard = sendMessage.Template,
+                                        actionCard = sendMessage.ActionCardTemplate,
                                     },
                                     to_all_user = "false",
                                 });
@@ -90,7 +90,7 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                     msg = new
                                     {
                                         msgtype = "feedCard",
-                                        feedCard = sendMessage.Template,
+                                        feedCard = sendMessage.FeedCardTemplate,
                                     },
                                     to_all_user = "false",
                                 });
@@ -104,17 +104,14 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                         {
                             case MessageTemplateMode.Text:
 #if DEBUG
-                                if (sendMessage.Template is TextTemplate textTemplate)
-                                {
-                                    textTemplate.content = $"{textTemplate.content} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
-                                }
+                                sendMessage.TextTemplate!.content = $"{sendMessage.TextTemplate!.content} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
 #endif
                                 result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
                                         msgtype = "text",
-                                        text = sendMessage.Template,
+                                        text = sendMessage.TextTemplate,
 
                                     },
                                     to_all_user = "false",
@@ -125,17 +122,14 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 break;
                             case MessageTemplateMode.Markdown:
 #if DEBUG
-                                if (sendMessage.Template is MarkdownTemplate markdownTemplate)
-                                {
-                                    markdownTemplate.text = $"{markdownTemplate.text} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
-                                }
+                                sendMessage.MarkdownTemplate!.text = $"{sendMessage.MarkdownTemplate!.text} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
 #endif
                                 result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
                                         msgtype = "markdown",
-                                        markdown = sendMessage.Template,
+                                        markdown = sendMessage.MarkdownTemplate,
                                     },
                                     to_all_user = "false",
                                     agent_id = sendReceiver.Agentid,
@@ -145,17 +139,14 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 break;
                             case MessageTemplateMode.Link:
 #if DEBUG
-                                if (sendMessage.Template is LinkTemplate linkTemplate)
-                                {
-                                    linkTemplate.text = $"{linkTemplate.text} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
-                                }
+                                sendMessage.LinkTemplate!.text = $"{sendMessage.LinkTemplate.text} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
 #endif
                                 result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
                                         msgtype = "link",
-                                        link = sendMessage.Template,
+                                        link = sendMessage.LinkTemplate,
                                     },
                                     to_all_user = "false",
                                     agent_id = sendReceiver.Agentid,
@@ -165,17 +156,14 @@ namespace ServiceKeeper.Consumer.Sample.Domain
                                 break;
                             case MessageTemplateMode.ActionCard:
 #if DEBUG
-                                if (sendMessage.Template is ActionCardTemplate actionCardTemplate)
-                                {
-                                    actionCardTemplate.markdown = $"{actionCardTemplate.markdown} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
-                                }
+                                sendMessage.ActionCardTemplate!.markdown = $"{sendMessage.ActionCardTemplate!.markdown} \r\nDebugTag:{DateTime.Now:hh:mm:ss}";
 #endif
                                 result = JsonConvert.SerializeObject(new
                                 {
                                     msg = new
                                     {
                                         msgtype = "action_card",
-                                        action_card = sendMessage.Template,
+                                        action_card = sendMessage.ActionCardTemplate,
                                     },
                                     to_all_user = "false",
                                     agent_id = sendReceiver.Agentid,

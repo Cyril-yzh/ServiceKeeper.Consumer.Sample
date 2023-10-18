@@ -7,11 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceKeeper.Core", "..\Se
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudPlatformProvider", "CloudPlatformProvider\CloudPlatformProvider.csproj", "{ED66F6FD-A356-476E-BF33-910F73E1EE8C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionSerializer", "..\ServiceKeeper.Common\ReflectionSerializer\ReflectionSerializer.csproj", "{1FF4BF57-2F87-48F6-BAEE-380227CB3DCA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceKeeper.Consumer.Sample.Domain", "ServiceKeeper.Consumer.Sample.Domain\ServiceKeeper.Consumer.Sample.Domain.csproj", "{70E72923-F2FE-4338-A3F0-1CA05A376198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceKeeper.Consumer.Sample.WebApi", "ServiceKeeper.Consumer.Sample.WebApi\ServiceKeeper.Consumer.Sample.WebApi.csproj", "{998F94A6-52DE-4C0C-BCAA-15E9A21081DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceKeeper.Consumer.Sample.WebApi", "ServiceKeeper.Consumer.Sample.WebApi\ServiceKeeper.Consumer.Sample.WebApi.csproj", "{998F94A6-52DE-4C0C-BCAA-15E9A21081DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		{ED66F6FD-A356-476E-BF33-910F73E1EE8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED66F6FD-A356-476E-BF33-910F73E1EE8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED66F6FD-A356-476E-BF33-910F73E1EE8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FF4BF57-2F87-48F6-BAEE-380227CB3DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FF4BF57-2F87-48F6-BAEE-380227CB3DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FF4BF57-2F87-48F6-BAEE-380227CB3DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FF4BF57-2F87-48F6-BAEE-380227CB3DCA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{70E72923-F2FE-4338-A3F0-1CA05A376198}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{70E72923-F2FE-4338-A3F0-1CA05A376198}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70E72923-F2FE-4338-A3F0-1CA05A376198}.Release|Any CPU.ActiveCfg = Release|Any CPU

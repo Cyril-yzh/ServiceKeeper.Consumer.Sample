@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ServiceKeeper.Common\ReflectionSerializer\ReflectionSerializer.csproj" />
     <ProjectReference Include="..\..\ServiceKeeper.Core\ServiceKeeper.Core.csproj" />
     <ProjectReference Include="..\CloudPlatformProvider\CloudPlatformProvider.csproj" />
   </ItemGroup>

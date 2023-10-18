@@ -1,4 +1,4 @@
-﻿using ReflectionSerializer;
+﻿using ServiceKeeper.Core.ReflectionSerializer;
 
 namespace ServiceKeeper.Consumer.Sample.Domain.Entity
 {
@@ -17,3 +17,4 @@ namespace ServiceKeeper.Consumer.Sample.Domain.Entity
         }
     }
 }
+

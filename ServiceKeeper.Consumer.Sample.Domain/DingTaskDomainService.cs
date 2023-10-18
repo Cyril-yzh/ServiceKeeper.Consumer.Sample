@@ -5,12 +5,10 @@ namespace ServiceKeeper.Consumer.Sample.Domain
 {
     public class DingTaskDomainService
     {
-        private readonly IMediator mediator;
         private readonly DingTalkMessageClient messageClient;
 
-        public DingTaskDomainService(IMediator mediator, DingTalkMessageClient messageClient)
+        public DingTaskDomainService(DingTalkMessageClient messageClient)
         {
-            this.mediator = mediator;
             this.messageClient = messageClient;
         }
 
@@ -39,11 +37,6 @@ namespace ServiceKeeper.Consumer.Sample.Domain
             {
                 throw;
             }
-           
-            //if (successfulSendCount > 0)
-            //{
-            //    await mediator.Publish(new SendCompletedEvent(successfulSendCount, task.SendMessage.Template.ToString()));
-            //}
         }
     }
 }

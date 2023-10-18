@@ -1,4 +1,4 @@
-﻿using ReflectionSerializer;
+﻿using ServiceKeeper.Core.ReflectionSerializer;
 
 namespace ServiceKeeper.Consumer.Sample.Domain.Entity
 {
@@ -7,15 +7,15 @@ namespace ServiceKeeper.Consumer.Sample.Domain.Entity
     /// </summary>
     public enum MessageTemplateMode
     {
-        [EnumTypeMapping(typeof(TextTemplate))]
+        [EnumTypeMapping(typeof(TextTemplate), "TextTemplate")]
         Text,
-        //[EnumTypeMapping(typeof(MarkdownTemplate))]
+        [EnumTypeMapping(typeof(MarkdownTemplate), "MarkdownTemplate")]
         Markdown,
-        //[EnumTypeMapping(typeof(LinkTemplate))]
+        [EnumTypeMapping(typeof(LinkTemplate), "LinkTemplate")]
         Link,
-        //[EnumTypeMapping(typeof(ActionCardTemplate))]
+        [EnumTypeMapping(typeof(ActionCardTemplate), "ActionCardTemplate")]
         ActionCard,
-        [EnumTypeMapping(typeof(FeedCardTemplate))]
+        [EnumTypeMapping(typeof(FeedCardTemplate), "FeedCardTemplate")]
         FeedCard
     }
 }
